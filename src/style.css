@@ -109,8 +109,60 @@ button:disabled {
   opacity: 0.6;
 }
 
-#account-address {
+#account-address,
+#session-list {
   overflow-wrap: anywhere;
+}
+
+#session-list {
+  margin: 0;
+  padding-left: 24px;
+}
+
+h3 {
+  margin: 16px 0 8px;
+  font-size: 1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.875rem;
+}
+
+input,
+select {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 8px;
+  color: inherit;
+  font: inherit;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+form {
+  margin-top: 16px;
+}
+
+form button,
+.goal button {
+  margin: 0 8px 8px 0;
+}
+
+.goal {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 0.875rem;
 }
 
 .notice {

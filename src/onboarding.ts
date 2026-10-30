@@ -1,3 +1,4 @@
+import { PendingError, TransactionFailedError } from '@loktin/sdk';
 import {
   BASE_FEE,
   Operation,
@@ -6,13 +7,14 @@ import {
 import { Api, Server } from '@stellar/stellar-sdk/rpc';
 import type { Balances } from './balances';
 import { FRIENDBOT_URL, TESTNET, USDC, USDC_FAUCET_URL } from './config';
+import { recordedWrite, type Write } from './session';
 import { link, showError } from './ui';
 import { signer } from './wallet';
 
 const POLL_ATTEMPTS = 30;
 const POLL_INTERVAL_MS = 1000;
 
-async function addTrustline(address: string): Promise<void> {
+async function addTrustline(address: string): Promise<Write> {
   const server = new Server(TESTNET.rpcUrl);
   const account = await server.getAccount(address);
   const transaction = new TransactionBuilder(account, {
@@ -35,13 +37,15 @@ async function addTrustline(address: string): Promise<void> {
 
   for (let attempt = 0; attempt < POLL_ATTEMPTS; attempt += 1) {
     const result = await server.getTransaction(sent.hash);
-    if (result.status === Api.GetTransactionStatus.SUCCESS) return;
+    if (result.status === Api.GetTransactionStatus.SUCCESS) {
+      return { hash: sent.hash, ledger: result.ledger };
+    }
     if (result.status === Api.GetTransactionStatus.FAILED) {
-      throw new Error(`The trustline transaction failed: ${sent.hash}.`);
+      throw new TransactionFailedError(sent.hash, undefined, undefined);
     }
     await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
   }
-  throw new Error(`The trustline is still pending: ${sent.hash}.`);
+  throw new PendingError(sent.hash, undefined);
 }
 
 function friendbotStep(address: string): HTMLElement[] {
@@ -67,7 +71,7 @@ function trustlineStep(address: string, onDone: () => void): HTMLElement[] {
   button.addEventListener('click', () => {
     button.disabled = true;
     showError(error, undefined);
-    addTrustline(address)
+    recordedWrite('Add the USDC trustline', () => addTrustline(address))
       .then(onDone)
       .catch((cause: unknown) => showError(error, cause))
       .finally(() => {

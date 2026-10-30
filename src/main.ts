@@ -3,11 +3,42 @@ import { EXPLORER_URL, TESTNET } from './config';
 import { createApp, type LoktinApp } from './loktin';
 import { renderOnboarding } from './onboarding';
 import { element, link, showError } from './ui';
+import { setupSpendSave } from './spend-save';
+import { setupTargetSavings } from './target-savings';
 import { initWallet } from './wallet';
 
 let app: LoktinApp | undefined;
 let address: string | undefined;
 let latestRefresh = 0;
+let savingsFor: string | undefined;
+
+function getApp(): LoktinApp {
+  if (!app) throw new Error('The SDK did not start.');
+  return app;
+}
+
+const spendSave = setupSpendSave({
+  getApp,
+  refreshBalances: () => void refresh(),
+  refreshGoals: () => targetSavings.load(),
+});
+const targetSavings = setupTargetSavings({
+  getApp,
+  refreshBalances: () => void refresh(),
+  onGoals: (goals) => spendSave.setGoals(goals),
+});
+
+/** Shows and loads the savings sections once per connected address. */
+function showSavings(next: string | undefined): void {
+  element('target-savings').hidden = !next;
+  element('spend-save').hidden = !next;
+  if (next === savingsFor) return;
+  savingsFor = next;
+  if (next) {
+    void targetSavings.load();
+    void spendSave.load();
+  }
+}
 
 function renderBalances(balances: Balances | undefined): void {
   const message = element('account-message');
@@ -46,7 +77,11 @@ async function refresh(): Promise<void> {
   showError(error, undefined);
   try {
     const balances = current ? await fetchBalances(current) : undefined;
-    if (request === latestRefresh) render(balances);
+    if (request === latestRefresh) {
+      render(balances);
+      const ready = balances?.exists && balances.usdc !== undefined;
+      showSavings(ready ? current : undefined);
+    }
   } catch (cause) {
     if (request === latestRefresh) {
       render(undefined);
@@ -61,6 +96,8 @@ function onAddress(next: string | undefined): void {
   element('account-address').textContent =
     next ?? 'Connect a wallet to see your balances.';
   element('refresh').hidden = !next;
+  showSavings(undefined);
+  app = undefined;
   try {
     app = createApp(next);
   } catch (cause) {
@@ -81,8 +118,7 @@ async function renderNetwork(): Promise<void> {
 
   const minCadence = element('network-min-cadence');
   try {
-    if (!app) throw new Error('The SDK did not start.');
-    const seconds = await app.targetSavings.minCadence();
+    const seconds = await getApp().targetSavings.minCadence();
     minCadence.textContent = `${seconds} seconds`;
   } catch (cause) {
     minCadence.textContent = 'Not available';

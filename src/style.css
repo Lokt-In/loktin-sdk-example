@@ -1,0 +1,124 @@
+:root {
+  color-scheme: light dark;
+  --text: #1a1a1a;
+  --muted: #5a5a5a;
+  --background: #ffffff;
+  --surface: #f4f4f2;
+  --border: #d8d8d4;
+  --link: #0b5cad;
+  --error: #b3261e;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #ececea;
+    --muted: #a8a8a4;
+    --background: #161616;
+    --surface: #212120;
+    --border: #3a3a38;
+    --link: #8ab8f0;
+    --error: #f2a6a0;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--text);
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+h2 {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+}
+
+main {
+  display: grid;
+  gap: 16px;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+section {
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+p {
+  margin: 0 0 8px;
+}
+
+dl {
+  margin: 0 0 8px;
+}
+
+dt {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+dd {
+  margin: 0 0 8px;
+  overflow-wrap: anywhere;
+}
+
+a {
+  color: var(--link);
+}
+
+button {
+  padding: 8px 12px;
+  color: inherit;
+  font: inherit;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+#account-address {
+  overflow-wrap: anywhere;
+}
+
+.notice {
+  color: var(--muted);
+}
+
+.error {
+  margin-top: 8px;
+  color: var(--error);
+  overflow-wrap: anywhere;
+}

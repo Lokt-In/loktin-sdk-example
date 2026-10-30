@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Loktin SDK example</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Loktin SDK example</h1>
+      <div id="wallet-button"></div>
+    </header>
+    <main>
+      <p class="notice">Testnet only. Test assets have no value.</p>
+      <p id="wallet-error" class="error" role="alert" hidden></p>
+
+      <section aria-labelledby="account-heading">
+        <h2 id="account-heading">Account</h2>
+        <p id="account-address">Connect a wallet to see your balances.</p>
+        <dl id="balances" hidden>
+          <dt>XLM</dt>
+          <dd id="balance-xlm"></dd>
+          <dt>USDC</dt>
+          <dd id="balance-usdc"></dd>
+        </dl>
+        <p id="account-message" hidden></p>
+        <button id="refresh" type="button" hidden>Refresh balances</button>
+        <p id="account-error" class="error" role="alert" hidden></p>
+      </section>
+
+      <section id="onboarding" aria-labelledby="onboarding-heading" hidden>
+        <h2 id="onboarding-heading">Get started</h2>
+        <div id="onboarding-step"></div>
+      </section>
+
+      <section aria-labelledby="network-heading">
+        <h2 id="network-heading">Network</h2>
+        <dl>
+          <dt>Passphrase</dt>
+          <dd id="network-passphrase"></dd>
+          <dt>Target Savings contract</dt>
+          <dd id="network-target-savings"></dd>
+          <dt>Spend &amp; Save contract</dt>
+          <dd id="network-spend-save"></dd>
+          <dt>Minimum cadence</dt>
+          <dd id="network-min-cadence">Loading...</dd>
+        </dl>
+        <p><a href="https://docs.loktin.xyz/sdk/">SDK documentation</a></p>
+        <p id="network-error" class="error" role="alert" hidden></p>
+      </section>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

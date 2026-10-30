@@ -1,0 +1,28 @@
+{
+  "name": "loktin-sdk-example",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build && node scripts/check-bundle.mjs",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "3.9.10",
+    "typescript": "6.0.3",
+    "vite": "8.3.5"
+  },
+  "dependencies": {
+    "@creit.tech/stellar-wallets-kit": "npm:@jsr/creit-tech__stellar-wallets-kit@2.7.1",
+    "@loktin/sdk": "0.5.0",
+    "@stellar/stellar-sdk": "17.2.1"
+  }
+}

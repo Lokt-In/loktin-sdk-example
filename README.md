@@ -2,14 +2,16 @@
 
 A small web app that shows how an integrator uses the Loktin SDK, [`@loktin/sdk`](https://github.com/Lokt-In/loktin-sdk). It runs on Stellar testnet only. Test assets have no value.
 
-This is the app's first part. It shows:
+The app shows how to:
 
-- connecting a wallet through Stellar Wallets Kit;
-- XLM and USDC balances;
-- the steps a new account needs: test XLM, the USDC trustline and test USDC;
-- the network settings and the contract's minimum cadence, read through the SDK.
+- connect a wallet through Stellar Wallets Kit;
+- read XLM and USDC balances;
+- take a new account through test XLM, the USDC trustline and test USDC;
+- create Target Savings goals, deposit, manage the allowance, and preview and withdraw;
+- enrol in Spend & Save, pay and save, read the withdrawal window, and preview and withdraw;
+- list every transaction of the session, with its hash and ledger.
 
-The Target Savings and Spend & Save flows come next.
+The browser smoke checklist is in [docs/smoke-test.md](docs/smoke-test.md).
 
 The app never handles a secret key. All signing happens in the wallet.
 

@@ -1,4 +1,4 @@
-import { LoktinError } from '@loktin/sdk';
+import { fromBaseUnits, LoktinError } from '@loktin/sdk';
 
 /** Plain text for any error: SDK errors with their code, wallet errors too. */
 function errorText(error: unknown): string {
@@ -33,4 +33,81 @@ export function element(id: string): HTMLElement {
   const found = document.getElementById(id);
   if (!found) throw new Error(`Missing element: ${id}.`);
   return found;
+}
+
+export function field(id: string): HTMLInputElement {
+  return element(id) as HTMLInputElement;
+}
+
+export function usdc(units: bigint): string {
+  return `${fromBaseUnits(units)} USDC`;
+}
+
+export function paragraph(text: string, className?: string): HTMLElement {
+  const created = document.createElement('p');
+  created.textContent = text;
+  if (className) created.className = className;
+  return created;
+}
+
+export function errorParagraph(): HTMLElement {
+  const created = paragraph('', 'error');
+  created.role = 'alert';
+  created.hidden = true;
+  return created;
+}
+
+export function details(
+  rows: readonly (readonly [string, string])[],
+): HTMLElement {
+  const list = document.createElement('dl');
+  for (const [term, value] of rows) {
+    const name = document.createElement('dt');
+    name.textContent = term;
+    const text = document.createElement('dd');
+    text.textContent = value;
+    list.append(name, text);
+  }
+  return list;
+}
+
+/** Runs `run` with `button` disabled. Any failure shows in `error`. */
+export async function runAction(
+  button: HTMLButtonElement,
+  error: HTMLElement,
+  run: () => Promise<void>,
+): Promise<void> {
+  button.disabled = true;
+  showError(error, undefined);
+  try {
+    await run();
+  } catch (cause) {
+    showError(error, cause);
+  } finally {
+    button.disabled = false;
+  }
+}
+
+export function onSubmit(
+  form: HTMLElement,
+  error: HTMLElement,
+  run: () => Promise<void>,
+): void {
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const button = form.querySelector<HTMLButtonElement>(
+      'button[type="submit"]',
+    );
+    if (button) void runAction(button, error, run);
+  });
+}
+
+export function onClick(
+  button: HTMLElement,
+  error: HTMLElement,
+  run: () => Promise<void>,
+): void {
+  button.addEventListener('click', () => {
+    void runAction(button as HTMLButtonElement, error, run);
+  });
 }

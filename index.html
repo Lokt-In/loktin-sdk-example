@@ -15,6 +15,12 @@
       <p class="notice">Testnet only. Test assets have no value.</p>
       <p id="wallet-error" class="error" role="alert" hidden></p>
 
+      <section aria-labelledby="session-heading">
+        <h2 id="session-heading">This session</h2>
+        <p id="session-empty">No transactions yet.</p>
+        <ol id="session-list" hidden></ol>
+      </section>
+
       <section aria-labelledby="account-heading">
         <h2 id="account-heading">Account</h2>
         <p id="account-address">Connect a wallet to see your balances.</p>
@@ -32,6 +38,171 @@
       <section id="onboarding" aria-labelledby="onboarding-heading" hidden>
         <h2 id="onboarding-heading">Get started</h2>
         <div id="onboarding-step"></div>
+      </section>
+
+      <section
+        id="target-savings"
+        aria-labelledby="target-savings-heading"
+        hidden
+      >
+        <h2 id="target-savings-heading">Target Savings</h2>
+        <p>Save toward a target by a deadline. At most 20 open goals.</p>
+
+        <form id="goal-form">
+          <h3>Create a goal</h3>
+          <label>
+            Target (USDC)
+            <input id="goal-target" inputmode="decimal" required />
+          </label>
+          <label>
+            Deposit size (USDC)
+            <input id="goal-deposit" inputmode="decimal" required />
+          </label>
+          <label>
+            Cadence (days)
+            <input id="goal-cadence" type="number" step="1" required />
+          </label>
+          <p id="goal-cadence-hint" class="hint" hidden></p>
+          <label>
+            Deadline (starts at 00:00 UTC on this date)
+            <input id="goal-deadline" type="date" required />
+          </label>
+          <label>
+            Rule
+            <select id="goal-rule">
+              <option value="penalty">Penalty</option>
+              <option value="lock">Lock</option>
+            </select>
+          </label>
+          <label id="goal-penalty-field">
+            Penalty (basis points, 0 to 1,000)
+            <input
+              id="goal-penalty"
+              type="number"
+              min="0"
+              max="1000"
+              step="1"
+              required
+            />
+          </label>
+          <p id="goal-lock-hint" class="hint" hidden>
+            No withdrawal until the target is reached or the deadline passes.
+          </p>
+          <div id="goal-breakdown"></div>
+          <button type="submit">Create goal</button>
+          <p id="goal-error" class="error" role="alert" hidden></p>
+          <div id="goal-result"></div>
+        </form>
+
+        <h3>Your goals</h3>
+        <button id="goals-refresh" type="button">Refresh goals</button>
+        <p id="goals-error" class="error" role="alert" hidden></p>
+        <div id="goals-result"></div>
+        <div id="goals"></div>
+      </section>
+
+      <section id="spend-save" aria-labelledby="spend-save-heading" hidden>
+        <h2 id="spend-save-heading">Spend &amp; Save</h2>
+        <p>
+          Each spend saves a share. A skim never exceeds the spend and never
+          blocks the payment.
+        </p>
+        <div id="spend-status"></div>
+        <button id="spend-refresh" type="button">Refresh status</button>
+        <p id="spend-error" class="error" role="alert" hidden></p>
+
+        <form id="enrol-form">
+          <h3 id="enrol-heading">Enrol</h3>
+          <label>
+            Percentage (basis points, 100 to 5,000, optional)
+            <input
+              id="enrol-percent"
+              type="number"
+              min="100"
+              max="5000"
+              step="1"
+            />
+          </label>
+          <label>
+            Round-up unit (USDC, optional)
+            <input id="enrol-round-up" inputmode="decimal" />
+          </label>
+          <p class="hint">Set the percentage, the round-up unit, or both.</p>
+          <label>
+            Monthly cap (USDC, optional)
+            <input id="enrol-cap" inputmode="decimal" />
+          </label>
+          <label>
+            Destination
+            <select id="enrol-destination">
+              <option value="balance">Spend &amp; Save balance</option>
+            </select>
+          </label>
+          <label>
+            Withdrawal day (1 to 28)
+            <input
+              id="enrol-day"
+              type="number"
+              min="1"
+              max="28"
+              step="1"
+              required
+            />
+          </label>
+          <p class="hint">
+            The window is the whole UTC day. It can open up to 60 seconds early.
+          </p>
+          <p id="enrol-day-hint" class="hint" hidden>
+            A new withdrawal day takes effect next month.
+          </p>
+          <button id="enrol-submit" type="submit">Enrol</button>
+          <p id="enrol-error" class="error" role="alert" hidden></p>
+          <div id="enrol-result"></div>
+        </form>
+
+        <div id="spend-enrolled" hidden>
+          <form id="pay-form">
+            <h3>Pay and save</h3>
+            <label>
+              Payee address
+              <input id="pay-to" autocomplete="off" required />
+            </label>
+            <label>
+              Amount (USDC)
+              <input id="pay-amount" inputmode="decimal" required />
+            </label>
+            <button id="pay-preview" type="button">Preview</button>
+            <div id="pay-preview-result"></div>
+            <button id="pay-submit" type="submit" disabled>Pay and save</button>
+            <p id="pay-error" class="error" role="alert" hidden></p>
+            <div id="pay-result"></div>
+          </form>
+
+          <h3>Withdrawal window</h3>
+          <div id="spend-window"></div>
+
+          <form id="withdraw-form">
+            <h3>Withdraw</h3>
+            <label>
+              Amount (USDC)
+              <input id="withdraw-amount" inputmode="decimal" required />
+            </label>
+            <button id="withdraw-preview" type="button">Preview</button>
+            <div id="withdraw-preview-result"></div>
+            <button id="withdraw-submit" type="submit" disabled>
+              Withdraw
+            </button>
+            <p id="withdraw-error" class="error" role="alert" hidden></p>
+            <div id="withdraw-result"></div>
+          </form>
+
+          <div id="spend-close" hidden>
+            <h3>Close</h3>
+            <p>Your balance is zero, so you can close this enrolment.</p>
+            <button id="close-submit" type="button">Close enrolment</button>
+            <p id="close-error" class="error" role="alert" hidden></p>
+          </div>
+        </div>
       </section>
 
       <section aria-labelledby="network-heading">
